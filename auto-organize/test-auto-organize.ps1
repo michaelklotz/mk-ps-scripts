@@ -1,5 +1,7 @@
 ﻿$scriptPath = split-path -parent $MyInvocation.MyCommand.Definition
 
+$DebugPreference = 'Continue'
+
 try {
     . ("C:\mk\code\github\mk-ps-scripts\auto-organize\auto-organize-date-functions.ps1")
 }
@@ -52,6 +54,8 @@ New-Item -Path "$scriptPath\file-organizer-tests\inbox" -Name "File J.txt" -Item
 (Get-Item "$scriptPath\file-organizer-tests\inbox\File J.txt").CreationTime = New-object DateTime 2014,04,01
 (Get-Item "$scriptPath\file-organizer-tests\inbox\File J.txt").LastWriteTime = New-object DateTime 2014,04,01
 
+New-Item -Path "$scriptPath\file-organizer-tests\inbox" -Name "2017-07-04 File K.txt" -ItemType "file" -Value "original name File 121313 I  "
+
 ###### RUN THE TESTS
 organizeFile -itemPath "$scriptPath\file-organizer-tests\inbox\Project B 080819" -destinationDir "$scriptPath\file-organizer-tests\archive"
 organizeFile -itemPath "$scriptPath\file-organizer-tests\inbox\Project C 180819" -destinationDir "$scriptPath\file-organizer-tests\archive"
@@ -63,6 +67,7 @@ organizeFile -itemPath "$scriptPath\file-organizer-tests\inbox\ 062418 File G.tx
 organizeFile -itemPath "$scriptPath\file-organizer-tests\inbox\ 131313 File H.txt" -destinationDir "$scriptPath\file-organizer-tests\archive"
 organizeFile -itemPath "$scriptPath\file-organizer-tests\inbox\File 121313 I  .txt" -destinationDir "$scriptPath\file-organizer-tests\archive"
 organizeFile -itemPath "$scriptPath\file-organizer-tests\inbox\File J.txt" -destinationDir "$scriptPath\file-organizer-tests\archive"
+organizeFile -itemPath "$scriptPath\file-organizer-tests\inbox\2017-07-04 File K.txt" -destinationDir "$scriptPath\file-organizer-tests\archive"
 
 Write-Host "Test Results......"
 
@@ -147,3 +152,12 @@ if(Test-Path -Path "$scriptPath\file-organizer-tests\archive\2014\04-Apr\2014-04
 } else {
     Write-Host "Test Case J.File Failed"
 }
+
+# K
+if(Test-Path -Path "$scriptPath\file-organizer-tests\archive\2017\07-Jul\2017-07-04 File K.txt" -PathType Leaf) {
+    Write-Host "Test Case K.File Success"
+} else {
+    Write-Host "Test Case K.File Failed"
+}
+
+$DebugPreference = 'SilentlyContinue'

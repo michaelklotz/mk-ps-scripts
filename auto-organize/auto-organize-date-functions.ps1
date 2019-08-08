@@ -1,4 +1,4 @@
-﻿Write-Host "Loading Date Functions..."
+﻿Write-Debug "Loading Date Functions..."
 
 
 
@@ -8,21 +8,21 @@ function isFileNameFormatted($itemName) {
         $pattern = "(?<text>.*)(?<date>\d{4}-\d{2}-\d{2})(?<text2>.*)"
         
         if($itemName -match $pattern) {
-            Write-Host "pattern matched"
+            Write-Debug "pattern matched"
             return $true
         } else {
             return $false
         }
 
     } catch {
-        Write-Host $_.Exception.Message
+        Write-Debug $_.Exception.Message
         # fail silently
     }
 }
 
 function getFormattedDateFromFileName($itemName) {
     
-    Write-Host "getFormattedDateFromFileName($itemName)"
+    Write-Debug "getFormattedDateFromFileName($itemName)"
     
     $return = @()
 
@@ -30,21 +30,21 @@ function getFormattedDateFromFileName($itemName) {
     $pattern6 = "(?<text>.*)(?<date>\d{6})(?<text2>.*)" 
 
     if($itemName -match $pattern8) {
-        Write-Host "pattern8 matched"
+        Write-Debug "pattern8 matched"
         $oldDate = $matches.date
         $newDate = ([DateTime]::ParseExact($oldDate,"yyyyMMdd",$null)).ToString('yyyy-MM-dd')
     }
     
     
     elseif($itemName -match $pattern6) {
-        Write-Host "pattern6 matched"
+        Write-Debug "pattern6 matched"
         $oldDate = $matches.date 
         $newDate = ([DateTime]::ParseExact($oldDate,"MMddyy",$null)).ToString('yyyy-MM-dd')
-        Write-Host "newdate: $newdate"
-        Write-Host "olddate: $olddate"
+        Write-Debug "newdate: $newdate"
+        Write-Debug "olddate: $olddate"
     }
     else {
-        Write-Host "No matches for $itemName"
+        Write-Debug "No matches for $itemName"
     }   
     
     if($newdate) {$return += $newdate}
@@ -57,11 +57,11 @@ function getFormattedDateFromFileName($itemName) {
 function renameItemWithDate($item, $itemDate) 
 {
         
-    Write-Host "renameItemWithDate(file=$item, fileDate=$itemDate)"
+    Write-Debug "renameItemWithDate(file=$item, fileDate=$itemDate)"
     
     $oldName = $item.Name
-    Write-Host "oldname: $oldName"
-    Write-Host "date to string: $($itemDate.ToString("yyyy-MM-dd"))"
+    Write-Debug "oldname: $oldName"
+    Write-Debug "date to string: $($itemDate.ToString("yyyy-MM-dd"))"
 
     $newName = $itemDate.ToString("yyyy-MM-dd") + " " + $oldName.Replace($itemDate.ToString("yyyy-MM-dd"),' ').Replace($itemDate.ToString("MMddyy"),' ').Replace('  ',' ').Replace('  ',' ').Replace(' .','.').Trim()
                     #+ $oldName.Replace($itemDate.ToString("MMddyy"),'').Replace('  ',' ').Replace(' .','.').Trim()
@@ -71,20 +71,20 @@ function renameItemWithDate($item, $itemDate)
     Write-Host "Renamed:  $($item.Name) --> $($newName)"
     
     $thisdir = Split-Path -Path $item -Parent
-    Write-Host "thisdir: $thisdir"
+    Write-Debug "thisdir: $thisdir"
     $renamedPath = "$thisdir\$newName"
 
-    Write-Host "Renamed Path: $renamedPath"
+    Write-Debug "Renamed Path: $renamedPath"
     if(Test-Path -Path $renamedPath){
         # file with path $path doesn't exist
         $renamedFile = Get-Item -Path $renamedPath
     } else {
-        Write-Host "Renamed File: $($renamedPath) from original file:$($item.FullName) does not exist!"
-        Write-Host "Exiting to prevent further errors..."
+        Write-Debug "Renamed File: $($renamedPath) from original file:$($item.FullName) does not exist!"
+        Write-Debug "Exiting to prevent further errors..."
     }
 
     
-    Write-Host $renamedFile
+    Write-Debug $renamedFile
     return (Get-Item $renamedFile)
 
 }
@@ -93,10 +93,10 @@ function getDateFromItem($item)
     $itemDate = Get-Date
     $primaryDatePattern = [Regex]::new('\b\d\d\d\d-\d\d-\d\d\b')
     $secondaryDatePattern = [Regex]::new('\b\d\d\d\d\d\d\b')
-    Write-Host "$item  -------"
+    Write-Debug "$item  -------"
     $primaryMatches = $primaryDatePattern.Matches($item)
     $secondaryMatches = $secondaryDatePattern.Matches($item)
-    Write-Host $matches
+    Write-Host "$matches"
     $primaryMatchIsValidDate = [DateTime]::TryParseExact($primaryMatches[0],"yyyy-MM-dd",[System.Globalization.CultureInfo]::InvariantCulture,
                                     [System.Globalization.DateTimeStyles]::None,
                                     [ref]$itemDate)
@@ -105,10 +105,10 @@ function getDateFromItem($item)
                                     [System.Globalization.DateTimeStyles]::None,
                                     [ref]$itemDate)
 
-    Write-Host "primary match $($primaryMatches[0])"
-    Write-Host "$primaryMatchIsValidDate"
-    Write-Host "secondary match $($secondaryMatches[0])"
-    Write-Host "$secondaryMatchIsValidDate"
+    Write-Debug "primary match $($primaryMatches[0])"
+    Write-Debug "$primaryMatchIsValidDate"
+    Write-Debug "secondary match $($secondaryMatches[0])"
+    Write-Debug "$secondaryMatchIsValidDate"
 
     if($primaryMatches.Count -eq 1 -and $primaryMatchIsValidDate) {
         $itemDate = [datetime]::parseexact($primaryMatches[0],"yyyy-MM-dd",$null)
@@ -127,18 +127,18 @@ function getDateFromItem($item)
 }
 
 function organizeFile($itemPath, $destinationDir) {
-    Write-Host "organizeFile(itemPath=$itemPath, destinationDir=$destinationDir)"
+    Write-Debug "organizeFile(itemPath=$itemPath, destinationDir=$destinationDir)"
 
     $item = Get-Item $itemPath
-    Write-Host "item name: $($item.Name)"
+    Write-Debug "item name: $($item.Name)"
     $itemDate = getDateFromItem -item $item
 
-    Write-Host $itemDate
+    Write-Debug $itemDate
 
     $dir = $destinationDir + "\" + $itemDate.ToString('yyyy') + "\" + $itemDate.ToString('MM-MMM')
-    Write-Host $destinationDir
+    Write-Debug $destinationDir
 
-    Write-Host $dir
+    Write-Debug $dir
     if (!(Test-Path $dir))
     {
 	    New-Item $dir -type directory | Out-Null
@@ -148,7 +148,7 @@ function organizeFile($itemPath, $destinationDir) {
     # if filename doesn't begin with the date yyyy-MM-dd then add it here
     # might be redundant but who cares
     if(-Not($item.Name.StartsWith($itemDate.ToString("yyyy-MM-dd")))) {
-        Write-Host "$($item.Name) doesnt start with date $($itemDate.ToString("yyyy-MM-dd"))"
+        Write-Debug "$($item.Name) doesnt start with date $($itemDate.ToString("yyyy-MM-dd"))"
         $item = renameItemWithDate -item $item -itemDate $itemDate   
     } 
     else
@@ -158,20 +158,20 @@ function organizeFile($itemPath, $destinationDir) {
         
     }
 
-    Write-Host "Moving $($item.fullname) to $dir "
+    Write-Host "Moving $($item.fullname) `n  to $dir "
     Move-Item $item.fullname $dir -Force
 
 }
 #function RecurseFiles($path = $pwd, [string[]]$exclude)
 #{
-#Write-Host "path: $path"
+#Write-Debug "path: $path"
 #    try {
 #
 #
 #        foreach ($item in Get-ChildItem $path)
 #        {
 #
-#            Write-Host "item: $item"
+#            Write-Debug "item: $item"
 #
 #            if (Test-Path $item.FullName -PathType Container)
 #            {
@@ -180,19 +180,19 @@ function organizeFile($itemPath, $destinationDir) {
 #            else 
 #            {
 #            
-#                Write-Host $item.FullName
+#                Write-Debug $item.FullName
 #            
 #                if(-Not(isFileNameFormatted($item.Name))) {
 #
 #                    $dates = getFormattedDateFromFileName($item.Name)
-#                    Write-Host $dates
-#                    Write-Host $dates.Count
+#                    Write-Debug $dates
+#                    Write-Debug $dates.Count
 #                    if($dates.count -eq 2) {
 #                        renameFileWithFormattedDate $item $dates[0] $dates[1]
 #                    } 
 #                    else
 #                    {
-#                        Write-Host "No Date Found in FileName[ $($item.FullName) ]"
+#                        Write-Debug "No Date Found in FileName[ $($item.FullName) ]"
 #                    }
 #                }
 #        
