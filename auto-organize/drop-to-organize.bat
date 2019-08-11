@@ -2,7 +2,7 @@
 
 for %%a in (%*) do (
 	echo Organizing file:[%%a]
-	powershell -command "D:\Scripts\FileOrganizer.ps1 -p_inputfile \"%%a\""
+	powershell -noprofile -command "C:\mk\code\github\mk-ps-scripts\auto-organize\auto-organize.ps1 -p_inputfile \"%%a\""
 	
 )
 pause

@@ -4,7 +4,7 @@ Script to organize files
 param ([string]$p_inputfile)
 #----------------------------
 # configurables
-$destinationDir = "D:\FileCabinet"
+$destinationDir = "C:\mk\archive"
 #----------------------------
 
 #Write-Output "inputfile: $p_inputfile"
@@ -16,5 +16,6 @@ catch {
     Write-Host "Error while loading supporting PowerShell Scripts" 
 }
 
-$file = Get-Item -path $p_inputfile
-organizeFile -file $file -destinationDir $destinationDir
+#$file = Get-Item -path $p_inputfile
+#organizeFile -file $file -destinationDir $destinationDir
+organizeFile -itemPath $p_inputfile -destinationDir $destinationDir

@@ -36,6 +36,10 @@ New-Item -Path "$scriptPath\file-organizer-tests\inbox\Project D" -Name "project
 (Get-Item "$scriptPath\file-organizer-tests\inbox\Project D").CreationTime = New-object DateTime 2010,01,01
 (Get-Item "$scriptPath\file-organizer-tests\inbox\Project D").LastWriteTime = New-object DateTime 2010,01,01
 
+# Project L Folder
+# explicitly set the created, modified date
+New-Item -ItemType Directory -Force -Path "$scriptPath\file-organizer-tests\inbox\2019-04-01 Project L" # no date, folder
+New-Item -Path "$scriptPath\file-organizer-tests\inbox\2019-04-01 Project L" -Name "project L file.txt" -ItemType "file" -Value "This is a text string."
 
 ###### FILES
 
@@ -60,6 +64,7 @@ New-Item -Path "$scriptPath\file-organizer-tests\inbox" -Name "2017-07-04 File K
 organizeFile -itemPath "$scriptPath\file-organizer-tests\inbox\Project B 080819" -destinationDir "$scriptPath\file-organizer-tests\archive"
 organizeFile -itemPath "$scriptPath\file-organizer-tests\inbox\Project C 180819" -destinationDir "$scriptPath\file-organizer-tests\archive"
 organizeFile -itemPath "$scriptPath\file-organizer-tests\inbox\Project D" -destinationDir "$scriptPath\file-organizer-tests\archive"
+organizeFile -itemPath "$scriptPath\file-organizer-tests\inbox\2019-04-01 Project L" -destinationDir "$scriptPath\file-organizer-tests\archive"
 
 organizeFile -itemPath "$scriptPath\file-organizer-tests\inbox\File E 10182015.txt" -destinationDir "$scriptPath\file-organizer-tests\archive"
 organizeFile -itemPath "$scriptPath\file-organizer-tests\inbox\File F 101915.txt" -destinationDir "$scriptPath\file-organizer-tests\archive"
@@ -109,6 +114,20 @@ if(Test-Path -Path "$scriptPath\file-organizer-tests\archive\2010\01-Jan\2010-01
 } else {
     Write-Host "Test Case D.File Failed"
 }
+
+# L
+if(Test-Path -Path "$scriptPath\file-organizer-tests\archive\2019\04-Apr\2019-04-01 Project L" -PathType Container) {
+    Write-Host "Test Case L.Folder Success"
+} else {
+    Write-Host "Test Case L.Folder Failed"
+}
+
+if(Test-Path -Path "$scriptPath\file-organizer-tests\archive\2019\04-Apr\2019-04-01 Project L\project l file.txt" -PathType Leaf) {
+    Write-Host "Test Case L.File Success"
+} else {
+    Write-Host "Test Case L.File Failed"
+}
+
 
 
 # E

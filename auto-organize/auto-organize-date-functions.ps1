@@ -159,7 +159,7 @@ function organizeFile($itemPath, $destinationDir) {
     }
 
     Write-Host "Moving $($item.fullname) `n  to $dir "
-    Move-Item $item.fullname $dir -Force
+    Move-Item "$($item.fullname)" "$dir" -Force
 
 }
 #function RecurseFiles($path = $pwd, [string[]]$exclude)
