@@ -40,8 +40,8 @@ function go-code { cd "C:\mk\code" }
 function go-wip { cd "C:\mk\wip" }
 # list of common directories
 $dirs = @{
-   temp = "C:\mk\temp";
-   code = "C:\mk\code";
+   temp = "C:\mk\temp"
+   code = "C:\mk\code"
    shortcuts = "C:\mk\folder-shortcuts"
 }
 
