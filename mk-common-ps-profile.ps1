@@ -5,6 +5,10 @@ $mo = Get-Date -Format MM
 # so nano can handle files with text created by powershell...
 $PSDefaultParameterValues = @{ '*:Encoding' = 'utf8' }
 
+# get organize functions
+function org([string]$p_inputfile){
+   C:\mk\code\github\mk-ps-scripts\auto-organize\auto-organize.ps1 -p_inputfile $p_inputfile
+}
 # dependencies
 # Install-Module pscx
 #

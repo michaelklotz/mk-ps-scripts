@@ -1,0 +1,14 @@
+foreach item dragged...
+
+	attempt to get date from filename/foldername
+	if only one match thats a valid date...
+		use that date
+	else
+		fallback to using the last modified date
+		
+	rename the file/folder so that the date is in front in YYYY-MM-DD format
+		preserve anything that was not matched as a date in the filename/foldername
+		trim white space
+	
+	move the file to the destination directory
+		Root/Year/MM-Mon/YYYY-MM-DD file name.txt
