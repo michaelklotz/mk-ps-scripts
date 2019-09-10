@@ -5,6 +5,10 @@ $mo = Get-Date -Format MM
 # so nano can handle files with text created by powershell...
 $PSDefaultParameterValues = @{ '*:Encoding' = 'utf8' }
 
+# get organize functions
+function org([string]$p_inputfile){
+   C:\mk\code\github\mk-ps-scripts\auto-organize\auto-organize.ps1 -p_inputfile $p_inputfile
+}
 # dependencies
 # Install-Module pscx
 #
@@ -37,21 +41,25 @@ function go-archive { cd "C:\mk\archive" }
 function go-temp { cd "C:\mk\temp" }
 function go-downloads { cd "C:\Users\m136815\Downloads" }
 function go-code { cd "C:\mk\code" }
-
+function go-wip { cd "C:\mk\wip" }
 # list of common directories
 $dirs = @{
-   temp = "C:\mk\temp";
-   code = "C:\mk\code";
-   gittfs = "C:\mk\code\git-tfs";
-   adwtestprj = "C:\mk\code\git-tfs\ADWTEST_PRJ";
-   download = "C:\Users\M136815\Downloads";
-   onedrive = "C:\Users\M136815\OneDrive";
-   desktop = "C:\Users\M136815\Desktop";
-   di = "mfad.mfroot.org\RCHDept\EDW\ADW\DataIntegration";
+   temp = "C:\mk\temp"
+   code = "C:\mk\code"
    shortcuts = "C:\mk\folder-shortcuts"
 }
 
-
+function godir() {
+   $dirs.Keys | Select-Object @{Expression={$($dirs.keys).indexOf($_)};Label="Index"},@{Expression={($_)};Label="Name"},@{Expression={$dirs.Item($_)};Label="Path"} | Format-Table
+   $dirinput = Read-Host -Prompt 'Which Dir?'
+   $path = $dirs[$dirinput]
+   if([string]::IsNullOrEmpty($path)) {
+      echo "invalid input"
+   } else {
+      cd $path
+   }
+   
+}
 # for task switcher
 Add-Type @"
   using System;
